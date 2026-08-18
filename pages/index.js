@@ -121,43 +121,48 @@ export default function Home() {
 
   async function handleWishSubmit(e) {
     e.preventDefault();
+    setApiError(null);
 
-    let photoUrl = wishPhotoPreview; // existing URL kept unless user picks new file
+    try {
+      let photoUrl = wishPhotoPreview; // existing URL kept unless user picks new file
 
-    if (wishPhotoFile) {
-      const fd = new FormData();
-      fd.append("images", wishPhotoFile);
-      const r = await fetch("/api/upload", { method: "POST", body: fd });
-      const data = await r.json();
-      photoUrl = data.urls?.[0] ?? null;
+      if (wishPhotoFile) {
+        const fd = new FormData();
+        fd.append("images", wishPhotoFile);
+        const uploadRes = await fetch("/api/upload", { method: "POST", body: fd });
+        const uploadData = await uploadRes.json();
+        photoUrl = uploadData.urls?.[0] ?? null;
+      }
+
+      const payload = {
+        title: wishForm.title.trim(),
+        description: wishForm.description.trim(),
+        link: wishForm.link.trim(),
+        occasion: wishForm.occasion === "Other" ? "" : wishForm.occasion,
+        customOccasion:
+          wishForm.occasion === "Other" ? wishForm.customOccasion.trim() : "",
+        photo: photoUrl,
+      };
+
+      const res = await fetch("/api/wishes", {
+        method: editingId ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(
+          editingId ? { id: editingId, ...payload } : { owner, ...payload },
+        ),
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setApiError(body.error || `Save failed (${res.status})`);
+        return;
+      }
+
+      setShowWishModal(false);
+      loadWishes();
+    } catch (err) {
+      setApiError(`Unexpected error: ${err.message}`);
     }
-
-    const payload = {
-      title: wishForm.title.trim(),
-      description: wishForm.description.trim(),
-      link: wishForm.link.trim(),
-      occasion: wishForm.occasion === "Other" ? "" : wishForm.occasion,
-      customOccasion:
-        wishForm.occasion === "Other" ? wishForm.customOccasion.trim() : "",
-      photo: photoUrl,
-    };
-
-    const r = await fetch("/api/wishes", {
-      method: editingId ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(
-        editingId ? { id: editingId, ...payload } : { owner, ...payload },
-      ),
-    });
-
-    if (!r.ok) {
-      const body = await r.json().catch(() => ({}));
-      setApiError(body.error || `Save failed (${r.status})`);
-      return;
-    }
-
-    setShowWishModal(false);
-    loadWishes();
   }
 
   async function handleDelete(id) {

@@ -8,7 +8,8 @@ export const config = { api: { bodyParser: false } };
 export default function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
 
-  const tmpDir = path.join(process.cwd(), "tmp");
+  // /tmp is the only writable directory in serverless environments
+  const tmpDir = process.env.VERCEL ? '/tmp' : path.join(process.cwd(), 'tmp');
   fs.mkdirSync(tmpDir, { recursive: true });
 
   const form = formidable({
