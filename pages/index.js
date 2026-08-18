@@ -61,6 +61,8 @@ export default function Home() {
   // Detail modal (received / history click)
   const [detailItem, setDetailItem] = useState(null);
 
+  const [apiError, setApiError] = useState(null);
+
   useEffect(() => {
     loadWishes().then(() => setLoading(false));
     const interval = setInterval(loadWishes, 30_000);
@@ -70,9 +72,15 @@ export default function Home() {
   async function loadWishes() {
     try {
       const r = await fetch("/api/wishes");
-      if (r.ok) setWishes(await r.json());
-    } catch {
-      /* ignore background poll errors */
+      if (r.ok) {
+        setWishes(await r.json());
+        setApiError(null);
+      } else {
+        const body = await r.json().catch(() => ({}));
+        setApiError(body.error || `Server error ${r.status}`);
+      }
+    } catch (e) {
+      setApiError(e.message);
     }
   }
 
@@ -134,18 +142,18 @@ export default function Home() {
       photo: photoUrl,
     };
 
-    if (editingId) {
-      await fetch("/api/wishes", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: editingId, ...payload }),
-      });
-    } else {
-      await fetch("/api/wishes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ owner, ...payload }),
-      });
+    const r = await fetch("/api/wishes", {
+      method: editingId ? "PUT" : "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(
+        editingId ? { id: editingId, ...payload } : { owner, ...payload },
+      ),
+    });
+
+    if (!r.ok) {
+      const body = await r.json().catch(() => ({}));
+      setApiError(body.error || `Save failed (${r.status})`);
+      return;
     }
 
     setShowWishModal(false);
@@ -489,6 +497,36 @@ export default function Home() {
       </Head>
 
       <div className="app">
+        {apiError && (
+          <div
+            style={{
+              background: "#fff0f0",
+              border: "1px solid #f5c0c0",
+              borderRadius: 12,
+              padding: "12px 16px",
+              marginBottom: 16,
+              color: "#b3263e",
+              fontSize: 14,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <span>⚠️ {apiError}</span>
+            <button
+              onClick={() => setApiError(null)}
+              style={{
+                border: 0,
+                background: "none",
+                cursor: "pointer",
+                color: "#b3263e",
+                fontWeight: 700,
+              }}
+            >
+              ✕
+            </button>
+          </div>
+        )}
         <header>
           <div className="brand">
             <h1>Lekha ❤️ Suriah</h1>
