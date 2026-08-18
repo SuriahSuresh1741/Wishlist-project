@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+tmp/
+
+# secrets — never commit these
+.env.local
+
+# uploaded images are local — don't commit them
+public/uploads/*
+!public/uploads/.gitkeep

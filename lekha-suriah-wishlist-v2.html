@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lekha ❤️ Suriah — Our Wishlist & Gift History</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f5f6fa;
+    color: #17181c;
+  }
+  button, input, textarea, select { font: inherit; }
+  button { cursor: pointer; }
+  .app { max-width: 1050px; margin: auto; min-height: 100vh; padding: 24px; }
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 28px;
+  }
+  .brand h1 { margin: 0; font-size: 28px; letter-spacing: -1px; }
+  .brand p { margin: 5px 0 0; color: #777b86; font-size: 14px; }
+  .add-btn {
+    border: 0; background: #17181c; color: white; padding: 12px 18px;
+    border-radius: 14px; font-weight: 700;
+  }
+  .tabs {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    background: #e9eaf0; padding: 5px; border-radius: 16px; margin-bottom: 24px;
+  }
+  .tab {
+    border: 0; background: transparent; padding: 13px; border-radius: 12px;
+    color: #686c76; font-weight: 700;
+  }
+  .tab.active { background: white; color: #17181c; box-shadow: 0 2px 10px #0000000b; }
+  .summary {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
+  }
+  .summary h2 { margin: 0; font-size: 20px; }
+  .count { color: #777b86; font-size: 14px; }
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 16px;
+  }
+  .card {
+    background: white; border-radius: 20px; overflow: hidden;
+    box-shadow: 0 6px 24px #0000000a; border: 1px solid #ececf1;
+  }
+  .photo {
+    height: 190px; background: #eceef3; display: flex; align-items: center;
+    justify-content: center; overflow: hidden;
+  }
+  .photo img { width: 100%; height: 100%; object-fit: cover; }
+  .placeholder { font-size: 42px; color: #9b9faa; }
+  .content { padding: 17px; }
+  .topline { display: flex; justify-content: space-between; gap: 10px; align-items: start; }
+  .title { margin: 0; font-size: 18px; }
+  .priority {
+    font-size: 11px; padding: 5px 8px; border-radius: 999px;
+    background: #f0f1f5; white-space: nowrap; font-weight: 700;
+  }
+  .description { color: #777b86; font-size: 14px; line-height: 1.5; margin: 10px 0; }
+  .price { font-size: 17px; font-weight: 800; margin: 10px 0; }
+  .actions { display: flex; gap: 8px; margin-top: 14px; }
+  .actions button, .actions a {
+    flex: 1; border: 1px solid #e3e4e9; background: white; padding: 9px;
+    border-radius: 10px; text-align: center; text-decoration: none; color: #17181c;
+    font-size: 13px; font-weight: 700;
+  }
+  .actions .danger { color: #b3263e; }
+  .empty {
+    background: white; border: 1px dashed #d7d9e0; border-radius: 20px;
+    padding: 55px 20px; text-align: center; color: #777b86;
+  }
+  .empty strong { display: block; color: #17181c; font-size: 18px; margin-bottom: 6px; }
+  .modal {
+    display: none; position: fixed; inset: 0; background: #00000055;
+    align-items: center; justify-content: center; padding: 18px; z-index: 5;
+  }
+  .modal.show { display: flex; }
+  .modal-box {
+    width: min(560px, 100%); max-height: 90vh; overflow: auto;
+    background: white; border-radius: 24px; padding: 24px;
+  }
+  .modal-head { display: flex; justify-content: space-between; align-items: center; }
+  .modal-head h2 { margin: 0 0 18px; }
+  .close { border: 0; background: #f0f1f4; width: 36px; height: 36px; border-radius: 50%; }
+  label { display: block; font-size: 13px; font-weight: 700; margin: 13px 0 7px; }
+  input, textarea, select {
+    width: 100%; border: 1px solid #dfe1e7; border-radius: 12px;
+    padding: 11px 12px; outline: none; background: white;
+  }
+  textarea { min-height: 85px; resize: vertical; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .submit {
+    width: 100%; margin-top: 18px; border: 0; border-radius: 13px;
+    padding: 13px; background: #17181c; color: white; font-weight: 800;
+  }
+  .footer { text-align: center; color: #999da7; font-size: 12px; padding: 35px 0 10px; }
+  @media (max-width: 620px) {
+    .app { padding: 16px; }
+    header { align-items: flex-start; gap: 12px; }
+    .brand h1 { font-size: 23px; }
+    .add-btn { padding: 10px 13px; }
+    .row { grid-template-columns: 1fr; }
+    .photo { height: 170px; }
+  }
+
+  .tabs { grid-template-columns: repeat(3, 1fr); }
+  .person-tabs { display:flex; gap:8px; margin-bottom:20px; }
+  .person { border:1px solid #e3e4e9; background:white; padding:9px 16px; border-radius:999px; font-weight:700; color:#777b86; }
+  .person.active { background:#17181c; color:white; border-color:#17181c; }
+  .received-btn { width:100%; border:0; background:#17181c; color:white; padding:10px; border-radius:10px; font-weight:700; margin-top:10px; }
+  .status { font-size:12px; color:#777b86; margin-top:8px; }
+  .history-card { display:flex; gap:14px; align-items:center; background:white; border:1px solid #ececf1; border-radius:18px; padding:14px; box-shadow:0 6px 24px #0000000a; }
+  .history-photo { width:80px; height:80px; border-radius:14px; overflow:hidden; background:#eceef3; flex:none; display:flex; align-items:center; justify-content:center; font-size:30px; }
+  .history-photo img { width:100%; height:100%; object-fit:cover; }
+  .history-info h3 { margin:0 0 5px; font-size:16px; }
+  .history-info p { margin:3px 0; color:#777b86; font-size:13px; }
+  .occasion { font-weight:700; color:#17181c !important; }
+  .received-form { display:none; margin-top:10px; padding:12px; background:#f6f7f9; border-radius:12px; }
+  .received-form.show { display:block; }
+  .received-form label { margin-top:7px; }
+  .received-form button { border:0; background:#17181c; color:white; padding:9px 12px; border-radius:9px; margin-top:9px; font-weight:700; }
+
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <h1>Lekha ❤️ Suriah</h1>
+      <p>Our private little wishlist</p>
+    </div>
+    <button class="add-btn" onclick="openModal()">＋ Add a wish</button>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" id="tab-wishlist" onclick="switchSection('wishlist')">🎁 Wishlist</button>
+    <button class="tab" id="tab-received" onclick="switchSection('received')">🎀 Received</button>
+    <button class="tab" id="tab-history" onclick="switchSection('history')">💕 Gift History</button>
+  </div>
+
+  <div class="person-tabs">
+    <button class="person active" id="person-lekha" onclick="switchOwner('Lekha')">Lekha</button>
+    <button class="person" id="person-suriah" onclick="switchOwner('Suriah')">Suriah</button>
+  </div>
+
+  <div class="summary">
+    <h2 id="listTitle">Lekha's Wishlist</h2>
+    <span class="count" id="count"></span>
+  </div>
+
+  <main id="wishlist" class="grid"></main>
+
+  <div class="footer">Made for two people who would rather get the right gift. 💕</div>
+</div></div>
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="modalTitle">Add a wish</h2>
+      <button class="close" onclick="closeModal()">×</button>
+    </div>
+
+    <form id="wishForm">
+      <label>Wish title *</label>
+      <input id="title" required placeholder="e.g. Sony headphones">
+
+      <label>Description</label>
+      <textarea id="description" placeholder="Anything they should know..."></textarea>
+
+      <label>Product / website link</label>
+      <input id="link" type="url" placeholder="https://...">
+
+      <label>Occasion (optional)</label>
+      <select id="occasion">
+        <option value="">No specific occasion</option>
+        <option>Birthday</option>
+        <option>Anniversary</option>
+        <option>Valentine's Day</option>
+        <option>Christmas</option>
+        <option>Achievement</option>
+        <option>Trip / Vacation</option>
+        <option>Just Because</option>
+        <option>Other</option>
+      </select>
+      <input id="customOccasion" placeholder="Type a custom occasion" style="display:none;margin-top:8px;">
+
+      <label>Photo</label>
+      <input id="photo" type="file" accept="image/*">
+
+      <button class="submit" type="submit">Save wish</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  let owner = "Lekha";
+  let section = "wishlist";
+  let editingId = null;
+  let photoData = null;
+
+  let wishes = JSON.parse(localStorage.getItem("coupleWishlistV2")) || [];
+
+  function save() {
+    localStorage.setItem("coupleWishlistV2", JSON.stringify(wishes));
+  }
+
+  function switchSection(name) {
+    section = name;
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.getElementById("tab-" + name).classList.add("active");
+    document.querySelector(".add-btn").style.display = name === "wishlist" ? "block" : "none";
+    render();
+  }
+
+  function switchOwner(name) {
+    owner = name;
+    document.querySelectorAll(".person").forEach(t => t.classList.remove("active"));
+    document.getElementById("person-" + name.toLowerCase()).classList.add("active");
+    render();
+  }
+
+  function occasionFor(w) {
+    return w.customOccasion || w.occasion || "";
+  }
+
+  function render() {
+    const container = document.getElementById("wishlist");
+
+    if (section === "wishlist") {
+      const list = wishes.filter(w => w.owner === owner && !w.received);
+      document.getElementById("listTitle").textContent = owner + "'s Wishlist";
+      document.getElementById("count").textContent = list.length + (list.length === 1 ? " wish" : " wishes");
+
+      if (!list.length) {
+        container.className = "empty";
+        container.innerHTML = "<strong>No wishes yet ✨</strong>Tap “Add a wish” to put something on your list.";
+        return;
+      }
+
+      container.className = "grid";
+      container.innerHTML = list.map(w => `
+        <article class="card">
+          <div class="photo">${w.photo ? `<img src="${w.photo}" alt="">` : `<div class="placeholder">🎁</div>`}</div>
+          <div class="content">
+            <div class="topline"><h3 class="title">${escapeHtml(w.title)}</h3></div>
+            ${w.description ? `<div class="description">${escapeHtml(w.description)}</div>` : ""}
+            ${occasionFor(w) ? `<div class="status">For: <strong>${escapeHtml(occasionFor(w))}</strong></div>` : ""}
+            <div class="actions">
+              ${w.link ? `<a href="${escapeAttr(w.link)}" target="_blank" rel="noopener">View link ↗</a>` : ""}
+              <button onclick="editWish('${w.id}')">Edit</button>
+              <button class="danger" onclick="deleteWish('${w.id}')">Delete</button>
+            </div>
+            <button class="received-btn" onclick="toggleReceivedForm('${w.id}')">🎀 Mark as Received</button>
+            <div class="received-form" id="received-${w.id}">
+              <label>Occasion</label>
+              <select id="receivedOccasion-${w.id}">
+                <option value="">No specific occasion</option>
+                <option>Birthday</option>
+                <option>Anniversary</option>
+                <option>Valentine's Day</option>
+                <option>Christmas</option>
+                <option>Achievement</option>
+                <option>Trip / Vacation</option>
+                <option>Just Because</option>
+                <option>Other</option>
+              </select>
+              <input id="receivedCustom-${w.id}" placeholder="Custom occasion" style="display:none;margin-top:7px;">
+              <label>Date received</label>
+              <input id="receivedDate-${w.id}" type="date">
+              <button onclick="markReceived('${w.id}')">Save as Received</button>
+            </div>
+          </div>
+        </article>
+      `).join("");
+
+      list.forEach(w => {
+        const select = document.getElementById("receivedOccasion-" + w.id);
+        if (select) select.addEventListener("change", () => {
+          document.getElementById("receivedCustom-" + w.id).style.display = select.value === "Other" ? "block" : "none";
+        });
+      });
+      return;
+    }
+
+    if (section === "received") {
+      const list = wishes.filter(w => w.owner === owner && w.received);
+      document.getElementById("listTitle").textContent = owner + "'s Received Gifts";
+      document.getElementById("count").textContent = list.length + (list.length === 1 ? " gift" : " gifts");
+
+      if (!list.length) {
+        container.className = "empty";
+        container.innerHTML = "<strong>Nothing received yet 🎀</strong>Gifts you mark as received will appear here.";
+        return;
+      }
+
+      container.className = "grid";
+      container.innerHTML = list.map(w => historyCard(w)).join("");
+      return;
+    }
+
+    const list = wishes.filter(w => w.received);
+    document.getElementById("listTitle").textContent = "Our Gift History";
+    document.getElementById("count").textContent = list.length + (list.length === 1 ? " gift" : " gifts");
+
+    if (!list.length) {
+      container.className = "empty";
+      container.innerHTML = "<strong>Your gift story starts here 💕</strong>Received gifts will build your history.";
+      return;
+    }
+
+    container.className = "grid";
+    container.innerHTML = list.map(w => historyCard(w)).join("");
+  }
+
+  function historyCard(w) {
+    return `<div class="history-card">
+      <div class="history-photo">${w.photo ? `<img src="${w.photo}" alt="">` : "🎁"}</div>
+      <div class="history-info">
+        <h3>${escapeHtml(w.title)}</h3>
+        ${occasionFor(w) ? `<p class="occasion">✨ ${escapeHtml(occasionFor(w))}</p>` : ""}
+        ${w.receivedDate ? `<p>Received on ${new Date(w.receivedDate + "T00:00:00").toLocaleDateString("en-IN", {day:"numeric", month:"short", year:"numeric"})}</p>` : ""}
+        <p>For ${escapeHtml(w.owner)}</p>
+      </div>
+    </div>`;
+  }
+
+  function toggleReceivedForm(id) {
+    const form = document.getElementById("received-" + id);
+    form.classList.toggle("show");
+    const date = document.getElementById("receivedDate-" + id);
+    if (!date.value) date.value = new Date().toISOString().slice(0,10);
+  }
+
+  function markReceived(id) {
+    const w = wishes.find(x => x.id === id);
+    if (!w) return;
+    const select = document.getElementById("receivedOccasion-" + id);
+    const custom = document.getElementById("receivedCustom-" + id);
+    w.received = true;
+    w.receivedDate = document.getElementById("receivedDate-" + id).value || new Date().toISOString().slice(0,10);
+    if (select.value === "Other") {
+      w.occasion = "";
+      w.customOccasion = custom.value.trim();
+    } else {
+      w.occasion = select.value;
+      w.customOccasion = "";
+    }
+    save();
+    render();
+  }
+
+  function openModal(id = null) {
+    editingId = id;
+    photoData = null;
+    document.getElementById("modal").classList.add("show");
+    document.getElementById("modalTitle").textContent = id ? "Edit wish" : "Add a wish";
+    document.getElementById("wishForm").reset();
+    document.getElementById("customOccasion").style.display = "none";
+
+    if (id) {
+      const w = wishes.find(x => x.id === id);
+      document.getElementById("title").value = w.title;
+      document.getElementById("description").value = w.description || "";
+      document.getElementById("link").value = w.link || "";
+      if (w.customOccasion) {
+        document.getElementById("occasion").value = "Other";
+        document.getElementById("customOccasion").value = w.customOccasion;
+        document.getElementById("customOccasion").style.display = "block";
+      } else {
+        document.getElementById("occasion").value = w.occasion || "";
+      }
+      photoData = w.photo || null;
+    }
+  }
+
+  function closeModal() {
+    document.getElementById("modal").classList.remove("show");
+    editingId = null;
+  }
+
+  document.getElementById("photo").addEventListener("change", e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => photoData = reader.result;
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById("wishForm").addEventListener("submit", e => {
+    e.preventDefault();
+
+    const data = {
+      owner,
+      title: document.getElementById("title").value.trim(),
+      description: document.getElementById("description").value.trim(),
+      link: document.getElementById("link").value.trim(),
+      occasion: document.getElementById("occasion").value === "Other" ? "" : document.getElementById("occasion").value,
+      customOccasion: document.getElementById("occasion").value === "Other" ? document.getElementById("customOccasion").value.trim() : "",
+      photo: photoData
+    };
+
+    if (editingId) {
+      const index = wishes.findIndex(w => w.id === editingId);
+      wishes[index] = { ...wishes[index], ...data };
+    } else {
+      wishes.unshift({ id: crypto.randomUUID(), ...data });
+    }
+
+    save();
+    closeModal();
+    render();
+  });
+
+  function editWish(id) { openModal(id); }
+
+  function deleteWish(id) {
+    if (!confirm("Delete this wish?")) return;
+    wishes = wishes.filter(w => w.id !== id);
+    save();
+    render();
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, c => ({
+      "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
+    }[c]));
+  }
+
+  function escapeAttr(str) { return escapeHtml(str); }
+
+  document.getElementById("occasion").addEventListener("change", e => {
+    document.getElementById("customOccasion").style.display = e.target.value === "Other" ? "block" : "none";
+  });
+
+  document.getElementById("modal").addEventListener("click", e => {
+    if (e.target.id === "modal") closeModal();
+  });
+
+  render();
+</script>
+</body>
+</html>
